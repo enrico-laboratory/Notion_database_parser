@@ -70,16 +70,33 @@ class GetRecords(object):
 
     def parse_database(self, record):
 
-        for key, value in self.db[record]['properties'].items():
+        record = {}
 
-            if value['type'] == 'rollup' and self.db[record][
-                    'properties'][key]['rollup']['array']:
-                print(key + ': ', self.get_properties(self.db[record][
-                        'properties'][key]['rollup']['array'][0]))
-            elif value['type'] == 'formula' and self.db[record][
-                    'properties'][key]['formula']:
-                print(key + ': ', self.get_properties(self.db[record][
-                        'properties'][key]['formula']))
-            else:
-                print(key + ': ', self.get_properties(self.db[record][
-                        'properties'][key]))
+        for record_id in range(len(self.db)):
+            record.update({'id': self.get_record_id(record_id)})
+
+            for key, value in self.db[record]['properties'].items():
+
+                if value['type'] == 'rollup' and self.db[record][
+                        'properties'][key]['rollup']['array']:
+                    record.update({key: self.get_properties(self.db[record][
+                            'properties'][key]['rollup']['array'][0])})
+                    # print(key + ': ', self.get_properties(self.db[record][
+                    # 'properties'][key]['rollup']['array'][0]))
+                elif value['type'] == 'formula' and self.db[record][
+                        'properties'][key]['formula']:
+                    record.update({key: self.get_properties(self.db[record][
+                            'properties'][key]['formula'])})
+                    # print(key + ': ', self.get_properties(self.db[record][
+                    # 'properties'][key]['formula']))
+                else:
+                    if '\\ufeff' in key:
+                        key = key.replace('\\ufeff', '')
+                        record.update({key: self.get_properties(self.db[
+                            record]['properties'][key])})
+                    else:
+                        record.update({key: self.get_properties(self.db[
+                            record]['properties'][key])})
+                    # print(key + ': ', self.get_properties(self.db[record][
+                    # 'properties'][key]))
+        return record

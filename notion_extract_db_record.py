@@ -33,7 +33,15 @@ location_db_records = GetRecords(location_db)
 #     print('====== NEW RECORD ======')
 #     pprint.pprint(repertoire_db_records.parse_database(i))
 
-for i in range(len(location_db)):
-    print('====== NEW RECORD ======')
-    pprint.pprint(location_db_records.get_record_id(i))
-    pprint.pprint(location_db_records.parse_database(i))
+records = []
+for record in range(len(location_db)):
+    record = (location_db_records.parse_database(record))
+    records.append(record)
+
+db_dict = {
+    'id': config.LOCATION_DB_ID,
+    'name': 'Locations',
+    'records': records
+}
+
+pprint.pprint(db_dict)
