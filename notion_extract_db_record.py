@@ -1,47 +1,32 @@
 from app.pull_db import ReturnDbDict, GetRecords
 import config
-import pprint
+import db_info
+import json
 
+db_name_and_id = {}
+if config.DB_ID:
+    db_name_and_id = config.DB_ID
+else:
+    db_name_and_id = db_info.input_db_name_and_id()
 
-project_db = ReturnDbDict(config.PROJECT_DB_ID, 'project_db').read_database()
-location_db = ReturnDbDict(config.LOCATION_DB_ID, 'location_db').read_database()
-cast_db = ReturnDbDict(config.CAST_DB_ID, 'cast_db').read_database()
-repertoire_db = ReturnDbDict(config.REPERTOIRE_DB_ID, 'repertoire_db').dump_database()
+token = ''
+if config.NOTION_TOKEN:
+    token = config.NOTION_TOKEN
+else:
+    token = db_info.input_token()
 
-# pprint.pprint(project_db)
-# pprint.pprint(location_db)
-# pprint.pprint(cast_db.dump_database())
-# pprint.pprint(repertoire_db.dump_database())
+for key, value in db_name_and_id.items():
+    db = ReturnDbDict(key, value, token).read_database()
+    db_record = GetRecords(db)
+    records = []
+    for record in range(len(db)):
+        record = (db_record.parse_database(record))
+        records.append(record)
 
-project_db_records = GetRecords(project_db)
-repertoire_db_records = GetRecords(repertoire_db)
-cast_db_records = GetRecords(cast_db)
-location_db_records = GetRecords(location_db)
-
-# pprint.pprint(project_db_records.get_properties(0))
-# pprint.pprint(repertoire_db_records.get_properties(0))
-
-
-# for i in range(len(project_db)):
-#     pprint.pprint(project_db_records.get_record_title(i))
-
-# for i in range(len(cast_db)):
-#     print('====== NEW RECORD ======')
-#     pprint.pprint(cast_db_records.parse_database(i))
-
-# for i in range(len(repertoire_db)):
-#     print('====== NEW RECORD ======')
-#     pprint.pprint(repertoire_db_records.parse_database(i))
-
-records = []
-for record in range(len(location_db)):
-    record = (location_db_records.parse_database(record))
-    records.append(record)
-
-db_dict = {
-    'id': config.LOCATION_DB_ID,
-    'name': 'Locations',
-    'records': records
-}
-
-pprint.pprint(db_dict)
+    db_dict = {
+        'name': key,
+        'id': value,
+        'records': records
+    }
+    with open(f'{config.basedir}/data_temp/{key}.json', 'w') as f:
+        json.dump(db_dict, f, indent=2)

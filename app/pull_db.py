@@ -5,17 +5,19 @@ import config
 
 class ReturnDbDict(object):
 
-    token = config.NOTION_TOKEN
-    headers = config.NOTION_HEADERS
-
-    def __init__(self, db_id, db_name):
+    def __init__(self, db_name, db_id, token):
         self.db_id = db_id
+        self.token = token
         # db_name temporary because of dumb_database()
         self.db_name = db_name
 
     def read_database(self):
+        headers = {
+            'Authorization': 'Bearer ' + self.token,
+            'Notion-Version': '2021-05-13'
+        }
         read_url = f"https://api.notion.com/v1/databases/{self.db_id}/query"
-        response = requests.request("POST", read_url, headers=self.headers)
+        response = requests.request("POST", read_url, headers=headers)
         response_json = response.json()['results']
         return response_json
 
@@ -70,33 +72,33 @@ class GetRecords(object):
 
     def parse_database(self, record):
 
-        record = {}
+        record_dict = {}
 
         for record_id in range(len(self.db)):
-            record.update({'id': self.get_record_id(record_id)})
+            record_dict.update({'id': self.get_record_id(record_id)})
 
             for key, value in self.db[record]['properties'].items():
 
                 if value['type'] == 'rollup' and self.db[record][
                         'properties'][key]['rollup']['array']:
-                    record.update({key: self.get_properties(self.db[record][
-                            'properties'][key]['rollup']['array'][0])})
+                    record_dict.update({key: self.get_properties(self.db[
+                        record]['properties'][key]['rollup']['array'][0])})
                     # print(key + ': ', self.get_properties(self.db[record][
                     # 'properties'][key]['rollup']['array'][0]))
                 elif value['type'] == 'formula' and self.db[record][
                         'properties'][key]['formula']:
-                    record.update({key: self.get_properties(self.db[record][
-                            'properties'][key]['formula'])})
+                    record_dict.update({key: self.get_properties(self.db[
+                        record]['properties'][key]['formula'])})
                     # print(key + ': ', self.get_properties(self.db[record][
                     # 'properties'][key]['formula']))
                 else:
                     if '\\ufeff' in key:
                         key = key.replace('\\ufeff', '')
-                        record.update({key: self.get_properties(self.db[
+                        record_dict.update({key: self.get_properties(self.db[
                             record]['properties'][key])})
                     else:
-                        record.update({key: self.get_properties(self.db[
+                        record_dict.update({key: self.get_properties(self.db[
                             record]['properties'][key])})
                     # print(key + ': ', self.get_properties(self.db[record][
                     # 'properties'][key]))
-        return record
+        return record_dict
