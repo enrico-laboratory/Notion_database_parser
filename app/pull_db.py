@@ -18,7 +18,12 @@ class ReturnDbDict(object):
         }
         read_url = f"https://api.notion.com/v1/databases/{self.db_id}/query"
         response = requests.request("POST", read_url, headers=headers)
-        response_json = response.json()['results']
+        print(response.status_code)
+        if response.status_code == 401:
+            print('error')
+            quit()
+        else:
+            response_json = response.json()['results']
         return response_json
 
 # Temporary function to dump database in the data_temp dir
