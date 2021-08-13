@@ -1,32 +1,28 @@
-from app.pull_db import ReturnDbDict, GetRecords
+from app.pull_db import QueryDatabase, GetRecords
 import config
-import db_info
 import json
+# from pprint import pprint
 
-db_name_and_id = {}
-if config.DB_ID:
-    db_name_and_id = config.DB_ID
-else:
-    db_name_and_id = db_info.input_db_name_and_id()
+query = QueryDatabase()
 
-token = ''
-if config.NOTION_TOKEN:
-    token = config.NOTION_TOKEN
-else:
-    token = db_info.input_token()
+list_databases = query.get_databases_list()
+# pprint(list_databases)
 
-for key, value in db_name_and_id.items():
-    db = ReturnDbDict(key, value, token).read_database()
-    db_record = GetRecords(db)
-    records = []
-    for record in range(len(db)):
-        record = (db_record.parse_database(record))
-        records.append(record)
+for record in range(len(list_databases)):
 
-    db_dict = {
-        'name': key,
-        'id': value,
-        'records': records
+    db_id = list_databases[record]['id']
+    db_name = list_databases[record]['name']
+
+    database = query.get_and_dump_database(db_id, db_name)
+    # pprint(database)
+    parsed_records = GetRecords(database)
+    parsed_records_list = parsed_records.parse_record(db_id)
+    # pprint(parsed_records_list)
+    parsed_database = {
+        'id': db_id,
+        'name': db_name,
+        'records': parsed_records_list
     }
-    with open(f'{config.basedir}/data_temp/{key}.json', 'w') as f:
-        json.dump(db_dict, f, indent=2)
+
+    with open(f"{config.basedir}/databases/{db_name}.dict", 'w') as f:
+        json.dump(parsed_database, f, indent=2)

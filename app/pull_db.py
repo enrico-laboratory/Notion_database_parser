@@ -1,36 +1,46 @@
-import requests
-import json
 import config
+import os
+import json
+from dotenv import load_dotenv
+from notion_client import Client
 
 
-class ReturnDbDict(object):
+load_dotenv()
+notion = Client(auth=os.getenv('NOTION_TOKEN'))
 
-    def __init__(self, db_name, db_id, token):
-        self.db_id = db_id
-        self.token = token
-        # db_name temporary because of dumb_database()
-        self.db_name = db_name
 
-    def read_database(self):
-        headers = {
-            'Authorization': 'Bearer ' + self.token,
-            'Notion-Version': '2021-05-13'
-        }
-        read_url = f"https://api.notion.com/v1/databases/{self.db_id}/query"
-        response = requests.request("POST", read_url, headers=headers)
-        print(response.status_code)
-        if response.status_code == 401:
-            print('error')
-            quit()
-        else:
-            response_json = response.json()['results']
-        return response_json
+class QueryDatabase(object):
+
+    def __init__(self):
+        # self.db_id = db_id
+        # self.db_name = db_name
+        pass
+
+    def get_databases_list(self):
+        databases_list = notion.databases.list()['results']
+
+        database_list_parsed = []
+
+        for i in range(len(databases_list)):
+            record = {}
+            database_name = notion.databases.list()[
+                'results'][i]['title'][0]['text']['content']
+            database_id = notion.databases.list()['results'][i]['id']
+            record.update({'id': database_id, 'name': database_name})
+            database_list_parsed.append(record)
+
+        return database_list_parsed
+
+    def get_database(self, db_id):
+        database = notion.databases.query(db_id)
+        return database
 
 # Temporary function to dump database in the data_temp dir
-    def dump_database(self):
-        with open(f'{config.basedir}/data_temp/{self.db_name}.json', 'w') as f:
-            json.dump(self.read_database(), f, indent=2)
-        return self.read_database()
+    def get_and_dump_database(self, db_id, db_name):
+        database = notion.databases.query(db_id)
+        with open(f'{config.basedir}/data_temp/{db_name}.json', 'w') as f:
+            json.dump(database, f, indent=2)
+        return database
 
 
 class GetRecords(object):
@@ -38,11 +48,7 @@ class GetRecords(object):
     def __init__(self, db):
         self.db = db
 
-    def get_record_id(self, record):
-        record_id = self.db[record]['id']
-        return record_id
-
-    def get_properties(self, db):
+    def filter_properties(self, db):
 
         if db['type'] == 'relation':
             relation = []
@@ -75,35 +81,47 @@ class GetRecords(object):
         if db['type'] == 'phone_number':
             return db['phone_number']
 
-    def parse_database(self, record):
+    def get_record_id(self, record):
+        record_id = self.db["results"][record]['id']
+        return record_id
 
-        record_dict = {}
+    def parse_record(self, db):
 
-        for record_id in range(len(self.db)):
-            record_dict.update({'id': self.get_record_id(record_id)})
+        parsed_records = []
 
-            for key, value in self.db[record]['properties'].items():
+        for record in range(len(self.db["results"])):
 
-                if value['type'] == 'rollup' and self.db[record][
+            record_dict = {}
+
+            record_dict.update({'id': self.get_record_id(record)})
+
+            for key, value in self.db["results"][record]['properties'].items():
+
+                if value['type'] == 'rollup' and self.db["results"][record][
                         'properties'][key]['rollup']['array']:
-                    record_dict.update({key: self.get_properties(self.db[
-                        record]['properties'][key]['rollup']['array'][0])})
-                    # print(key + ': ', self.get_properties(self.db[record][
-                    # 'properties'][key]['rollup']['array'][0]))
-                elif value['type'] == 'formula' and self.db[record][
+                    record_dict.update({
+                        key: self.filter_properties(self.db["results"][
+                            record]['properties'][key]['rollup']['array'][0])
+                        })
+                elif value['type'] == 'formula' and self.db["results"][record][
                         'properties'][key]['formula']:
-                    record_dict.update({key: self.get_properties(self.db[
-                        record]['properties'][key]['formula'])})
-                    # print(key + ': ', self.get_properties(self.db[record][
-                    # 'properties'][key]['formula']))
+                    record_dict.update({
+                        key: self.filter_properties(self.db["results"][
+                            record]['properties'][key]['formula'])
+                        })
                 else:
                     if '\\ufeff' in key:
                         key = key.replace('\\ufeff', '')
-                        record_dict.update({key: self.get_properties(self.db[
-                            record]['properties'][key])})
+                        record_dict.update({
+                            key: self.filter_properties(self.db["results"][
+                                record]['properties'][key])
+                            })
                     else:
-                        record_dict.update({key: self.get_properties(self.db[
-                            record]['properties'][key])})
-                    # print(key + ': ', self.get_properties(self.db[record][
-                    # 'properties'][key]))
-        return record_dict
+                        record_dict.update({
+                            key: self.filter_properties(self.db["results"][
+                                record]['properties'][key])
+                            })
+
+            parsed_records.append(record_dict)
+
+        return parsed_records
