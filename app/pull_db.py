@@ -9,38 +9,33 @@ load_dotenv()
 notion = Client(auth=os.getenv('NOTION_TOKEN'))
 
 
-class QueryDatabase(object):
+def get_databases_list():
+    databases_list = notion.databases.list()['results']
 
-    def __init__(self):
-        # self.db_id = db_id
-        # self.db_name = db_name
-        pass
+    database_list_parsed = []
 
-    def get_databases_list(self):
-        databases_list = notion.databases.list()['results']
+    for i in range(len(databases_list)):
+        record = {}
+        database_name = notion.databases.list()[
+            'results'][i]['title'][0]['text']['content']
+        database_id = notion.databases.list()['results'][i]['id']
+        record.update({'id': database_id, 'name': database_name})
+        database_list_parsed.append(record)
 
-        database_list_parsed = []
+    return database_list_parsed
 
-        for i in range(len(databases_list)):
-            record = {}
-            database_name = notion.databases.list()[
-                'results'][i]['title'][0]['text']['content']
-            database_id = notion.databases.list()['results'][i]['id']
-            record.update({'id': database_id, 'name': database_name})
-            database_list_parsed.append(record)
 
-        return database_list_parsed
+def get_database(db_id):
+    database = notion.databases.query(db_id)
+    return database
 
-    def get_database(self, db_id):
-        database = notion.databases.query(db_id)
-        return database
 
 # Temporary function to dump database in the data_temp dir
-    def get_and_dump_database(self, db_id, db_name):
-        database = notion.databases.query(db_id)
-        with open(f'{config.basedir}/data_temp/{db_name}.json', 'w') as f:
-            json.dump(database, f, indent=2)
-        return database
+def get_and_dump_database(db_id, db_name):
+    database = notion.databases.query(db_id)
+    with open(f'{config.basedir}/data_temp/{db_name}.json', 'w') as f:
+        json.dump(database, f, indent=2)
+    return database
 
 
 class GetRecords(object):
@@ -65,7 +60,7 @@ class GetRecords(object):
             return db['title'][0]['text']['content']
         if db['type'] == 'created_time':
             return db['created_time']
-        if db['type'] == 'select':
+        if db['type'] == 'select' and db['select']:
             return db['select']['name']
         if db['type'] == 'multi_select':
             multi_select = []
@@ -125,3 +120,25 @@ class GetRecords(object):
             parsed_records.append(record_dict)
 
         return parsed_records
+
+
+def parse_database(list_databases):
+
+    for record in range(len(list_databases)):
+
+        db_id = list_databases[record]['id']
+        db_name = list_databases[record]['name']
+
+        database = get_and_dump_database(db_id, db_name)
+        # pprint(database)
+        parsed_records = GetRecords(database)
+        parsed_records_list = parsed_records.parse_record(db_id)
+        # pprint(parsed_records_list)
+        parsed_database = {
+            'id': db_id,
+            'name': db_name,
+            'records': parsed_records_list
+        }
+
+        with open(f"{config.basedir}/databases/{db_name}.dict", 'w') as f:
+            json.dump(parsed_database, f, indent=2)
