@@ -1,6 +1,6 @@
 from app.pull_db import ReturnDbDict, GetRecords
 import config
-import db_info
+import app.db_info
 import json
 
 db_name_and_id = {}

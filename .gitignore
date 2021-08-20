@@ -3,3 +3,4 @@ venv
 data_temp
 __pycache__
 .vscode
+databases
