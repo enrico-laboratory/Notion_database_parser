@@ -3,10 +3,23 @@ import os
 import json
 from dotenv import load_dotenv
 from notion_client import Client
+from pyinputplus import inputPassword
 
 
 load_dotenv()
-notion = Client(auth=os.getenv('NOTION_TOKEN'))
+
+
+def get_token():
+    if os.getenv('NOTION_TOKEN') is None:
+        token = inputPassword('Enter Notion token >')
+    else:
+        token = os.getenv('NOTION_TOKEN')
+    return token
+
+
+token = get_token()
+
+notion = Client(auth=token)
 
 
 def get_databases_list():
