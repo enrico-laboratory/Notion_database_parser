@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from notion_client import Client
 from pyinputplus import inputPassword
 
+basedir = config.basedir
 
 load_dotenv()
 
@@ -16,11 +17,8 @@ def get_token():
         token = os.getenv('NOTION_TOKEN')
     return token
 
-
 token = get_token()
-
 notion = Client(auth=token)
-
 
 def get_databases_list():
     databases_list = notion.databases.list()['results']
@@ -46,10 +44,19 @@ def get_database(db_id):
 # Temporary function to dump database in the data_temp dir
 def get_and_dump_database(db_id, db_name):
     database = notion.databases.query(db_id)
-    with open(f'{config.basedir}/data_temp/{db_name}.json', 'w') as f:
-        json.dump(database, f, indent=2)
+
+    dump_json(db_name, "source_database", database)
+
     return database
 
+def dump_json(name, directory, database):
+    path = basedir + "/" + directory
+    if os.path.isdir(path) is False:
+        os.mkdir(path)
+
+    with open(f'{path}/{name}.json', 'w') as f:
+        json.dump(database, f, indent=2)
+    return database
 
 class GetRecords(object):
 
@@ -75,18 +82,18 @@ class GetRecords(object):
             return db['created_time']
         if db['type'] == 'select' and db['select']:
             return db['select']['name']
-        if db['type'] == 'multi_select':
+        if db['type'] == 'multi_select' and db['multi_select']:
             multi_select = []
             for i in range(len(db['multi_select'])):
                 multi_select.append(db['multi_select'][i]['name'])
             return multi_select
-        if db['type'] == 'email':
+        if db['type'] == 'email' and db['email']:
             return db['email']
-        if db['type'] == 'number':
+        if db['type'] == 'number' and db['number']:
             return db['number']
-        if db['type'] == 'url':
+        if db['type'] == 'url' and db['url']:
             return db['url']
-        if db['type'] == 'phone_number':
+        if db['type'] == 'phone_number' and db['phone_number']:
             return db['phone_number']
 
     def get_record_id(self, record):
@@ -153,5 +160,4 @@ def parse_database(list_databases):
             'records': parsed_records_list
         }
 
-        with open(f"{config.basedir}/databases/{db_name}.dict", 'w') as f:
-            json.dump(parsed_database, f, indent=2)
+        dump_json(db_name, "databases", parsed_database)
