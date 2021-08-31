@@ -24,7 +24,6 @@ def get_databases_list():
     databases_list = notion().databases.list()['results']
 
     database_list_parsed = []
-
     for i in range(len(databases_list)):
         record = {}
         database_name = notion().databases.list()[
@@ -32,12 +31,14 @@ def get_databases_list():
         database_id = notion().databases.list()['results'][i]['id']
         record.update({'id': database_id, 'name': database_name})
         database_list_parsed.append(record)
+    
+    dump_json('databases_list', 'databases', database_list_parsed)
 
     return database_list_parsed
 
 
 def get_database(db_id):
-    database = notion.databases.query(db_id)
+    database = notion().databases.query(db_id)
     return database
 
 
