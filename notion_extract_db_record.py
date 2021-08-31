@@ -6,7 +6,7 @@ list_databases = []
 
 if args.l is True:
     list_databases = get_databases_list()
-    pprint(list_databases)
+    # pprint(list_databases)
     dump_json('databases_list', 'databases', list_databases)
 else:
     database = {"id": args.d,

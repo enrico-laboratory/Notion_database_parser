@@ -9,27 +9,27 @@ basedir = config.basedir
 
 load_dotenv()
 
-
-def get_token():
+def notion():
     if os.getenv('NOTION_TOKEN') is None:
         token = inputPassword('Enter Notion token >')
     else:
         token = os.getenv('NOTION_TOKEN')
-    return token
+    notion = Client(auth=token)
+    
+    return notion
 
-token = get_token()
-notion = Client(auth=token)
 
 def get_databases_list():
-    databases_list = notion.databases.list()['results']
+
+    databases_list = notion().databases.list()['results']
 
     database_list_parsed = []
 
     for i in range(len(databases_list)):
         record = {}
-        database_name = notion.databases.list()[
+        database_name = notion().databases.list()[
             'results'][i]['title'][0]['text']['content']
-        database_id = notion.databases.list()['results'][i]['id']
+        database_id = notion().databases.list()['results'][i]['id']
         record.update({'id': database_id, 'name': database_name})
         database_list_parsed.append(record)
 
@@ -43,7 +43,7 @@ def get_database(db_id):
 
 # Temporary function to dump database in the data_temp dir
 def get_and_dump_database(db_id, db_name):
-    database = notion.databases.query(db_id)
+    database = notion().databases.query(db_id)
 
     dump_json(db_name, "source_database", database)
 
