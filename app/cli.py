@@ -10,6 +10,9 @@ parser.add_argument("-n",
                     action="store",
                     default="database")
 
+parser.add_argument("-u",
+                    help="Dump database list and parsed databases",
+                    action="store_true")
 
 group = parser.add_mutually_exclusive_group(required=True)
 
