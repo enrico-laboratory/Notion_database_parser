@@ -22,7 +22,10 @@ group.add_argument("-d",
 
 
 group.add_argument("-l",
-                   help="""Parse the entire list of databases shared in a notion integration""",
+                   help="""
+                   Parse the entire list of databases
+                   shared in a notion integration
+                   """,
                    action="store_true")
 
 
