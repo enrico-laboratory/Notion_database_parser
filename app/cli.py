@@ -6,23 +6,23 @@ parser = argparse.ArgumentParser(
 )
 
 parser.add_argument("-n",
-                    help="Chose a name for the database",
+                    help="To use with option -d. Give a name to the database",
                     action="store",
                     default="database")
 
 parser.add_argument("-u",
-                    help="Dump database list and parsed databases",
+                    help="Dump also databases list",
                     action="store_true")
 
 group = parser.add_mutually_exclusive_group(required=True)
 
 group.add_argument("-d",
-                   help="Input database id",
+                   help="Parse a single database proviing the database id",
                    action="store")
 
 
 group.add_argument("-l",
-                   help="Parse the entire list of databases",
+                   help="""Parse the entire list of databases shared in a notion integration""",
                    action="store_true")
 
 
