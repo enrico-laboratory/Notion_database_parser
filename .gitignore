@@ -1,6 +1,7 @@
-config.py
 venv
 data_temp
 __pycache__
 .vscode
+.env
 databases
+source_database
