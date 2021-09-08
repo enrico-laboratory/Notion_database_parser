@@ -6,6 +6,9 @@ basedir = config.basedir
 
 
 def dump_json(name, directory, database):
+    """"Helpers for the json dumping
+    in specific directories"""
+
     path = basedir + "/" + directory
     if os.path.isdir(path) is False:
         os.mkdir(path)

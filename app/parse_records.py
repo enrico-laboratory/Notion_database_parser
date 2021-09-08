@@ -1,9 +1,17 @@
 class ParseRecords(object):
+    """"The class parse the records of a database
+    using the filter_properties() which filter the
+    values of the single record from the formats.
+    The parse_record create a list with all the
+    parsed records belonging to a database."""
 
     def __init__(self, db):
         self.db = db
 
     def filter_properties(self, key):
+        """"Filter record extracting the record value
+        leaving behind the record formats"""
+
         # TODO Simplify the filters.
         # TODO Create dict with type:value per each filter
         # TODO Create filtering if-statement.
@@ -41,10 +49,14 @@ class ParseRecords(object):
             return key['phone_number']
 
     def get_record_id(self, record):
+        """Get the record id."""
+
         record_id = self.db["results"][record]['id']
         return record_id
 
     def parse_record(self, db):
+        """ create a list comprising all the parsed
+        records belonging to a database."""
 
         parsed_records = []
 
