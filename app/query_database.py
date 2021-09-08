@@ -9,6 +9,9 @@ load_dotenv()
 
 
 def notion():
+    """"Initialize the notion_client, providing token via
+        env variable or user input"""
+
     if os.getenv('NOTION_TOKEN') is None:
         token = inputPassword('Enter Notion token >')
     else:
@@ -19,6 +22,13 @@ def notion():
 
 
 def get_databases_list():
+    """"Query notion API and get the database list of the
+    databases comprised in the correspondent integration.
+    If command line option -l is given the list is parsed
+    and simplified to get only database name and id. If CLI
+    option -d is specified, it creates dict with name and
+    database id of the correspondent CLI arguments.
+    The function also dump the list in a json file"""
 
     databases_list = notion().databases.list()['results']
 
@@ -46,6 +56,9 @@ def get_databases_list():
 
 
 def get_and_dump_database(db_id, db_name):
+    """"It gets and dump the queried database.
+    It needs database name and id."""
+
     database = notion().databases.query(db_id)
 
     dump_json(db_name, "source_database", database)
