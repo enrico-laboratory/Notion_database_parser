@@ -6,7 +6,11 @@ from app.helpers import dump_json
 def parse_database(list_databases):
     """"For all the database comprised in the list_database
     It call get_and_dump_database(), parse the
+<<<<<<< HEAD
     databases' records and merge the database id and
+=======
+    databases's record and merge the database id and
+>>>>>>> 0d4a1f1938c0739be447089fd6171a75f3312e80
     name with the list of record. It finally dump it
     in a json file"""
 

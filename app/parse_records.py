@@ -1,6 +1,10 @@
 # TODO review docstrings
 class ParseRecords(object):
+<<<<<<< HEAD
     """"The class parses the records of a database
+=======
+    """"The class parse the records of a database
+>>>>>>> 0d4a1f1938c0739be447089fd6171a75f3312e80
     using the filter_properties() which filter the
     values of the single record from the formats.
     The parse_record create a list with all the
@@ -57,9 +61,13 @@ class ParseRecords(object):
 
     def parse_record(self, db):
         """ create a list comprising all the parsed
+<<<<<<< HEAD
         records belonging to a database.
         Accoding to the record type, call the
         filter properties for the right json key."""
+=======
+        records belonging to a database."""
+>>>>>>> 0d4a1f1938c0739be447089fd6171a75f3312e80
 
         parsed_records = []
 
