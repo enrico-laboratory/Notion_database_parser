@@ -2,9 +2,11 @@
 
 ## Description
 
-The app allow to dump a .json response via the notion api, parse the json response extracting only the values and dump the output in a new json file.
+The app allows to query via the [Notion API](https://developers.notion.com/docs/getting-started "Notion API") one database or all the databases present in [Notion Integration](https://www.notion.so/my-integrations "Notion Integration"). The query dumps a .json response, parses the response and creates a new simplified json file, stripped from all the formats information showing only the database records values. The result is similar to a database export from the Notion App directly.
 
-Example of database query response from notion api. Single record snippet.
+The query to the Notion database is done with the [notion_client app](https://github.com/ramnes/notion-sdk-py).
+
+Example of database query response from Notion API, not parsed. Single record snippet.
 
     "object": "list",
     "results": [
@@ -92,20 +94,30 @@ Parsed version of the above database record using Notion Database Parser app.
 
 ## Usage
 
-The Notion Dabase parser can be executed with the following options:
+The Notion Database Parser is a command line application and can be executed with the following options:
 
 `-l`
 Parse the entire list of databases shared in a notion integration
 
 `-n`
-To use with option -d. Give a name to the database",
+To use with option -d. Give a name to the database
 
 `-d`
-Parse a single database proviing the database id
+Parse a single database providing the database id as parameter
 
 `-u`
 Dump also databases list
 
-The parsed json files are dumped in the directory ./databases/\]<dbname\>.json.
+The parsed json files are dumped in the directory ./databases/\<dbname\>.json. At the moment the app also dumps the source databases in ./source_databases/\<source_dbname\>.json.
 
-At the moment the app also dump the source databases in ./source_databases/\<source_dbname\>.json.
+## Why?
+
+In Notion you can create databases and database views. In the view you can add filters and sorting options, like a database query. I use the view of a master database to show only the relevant information for a specific purpose. 
+
+I organise and perform music projects with choirs and I need to share with them practical information (repertoire, singers' contact, locations, etc...). For each topic I have a master database. I then create a database view to extract from the master database the relevant information of a specific project.
+
+I want to use Notion for this purpose but, unfortunately, while you can easily share a database, it is not possible to share only the database view without sharing the entire underlying database. That will force me to share with a choir information coming from another choir creating among others privacy issues. 
+
+I decided then to create a separate website where I can share with choirs all the relevant information to their project.The Notion Database Parser is a part of this website.
+
+There are others and, probably less complicated solutions to solve my problem, however I am practicing my coding skills and this project helped me quite a lot in deepening my knowledge in Python and having some fun doing so :)

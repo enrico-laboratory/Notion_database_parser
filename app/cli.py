@@ -17,7 +17,7 @@ parser.add_argument("-u",
 group = parser.add_mutually_exclusive_group(required=True)
 
 group.add_argument("-d",
-                   help="Parse a single database proviing the database id",
+                   help="Parse a single database providing the database id as parameter",
                    action="store")
 
 

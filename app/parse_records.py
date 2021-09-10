@@ -1,5 +1,6 @@
+# TODO review docstrings
 class ParseRecords(object):
-    """"The class parse the records of a database
+    """"The class parses the records of a database
     using the filter_properties() which filter the
     values of the single record from the formats.
     The parse_record create a list with all the
