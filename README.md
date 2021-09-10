@@ -4,13 +4,11 @@
 
 The app allows to query via the [Notion API](https://developers.notion.com/docs/getting-started "Notion API") one database or all the databases present in [Notion Integration](https://www.notion.so/my-integrations "Notion Integration"). The query dumps a .json response, parses the response and creates a new simplified json file, stripped from all the formats information showing only the database records values. The result is similar to a database export from the Notion App directly.
 
-<<<<<<< HEAD
 The query to the Notion database is done with the [notion_client app](https://github.com/ramnes/notion-sdk-py).
 
 Example of database query response from Notion API, not parsed. Single record snippet.
-=======
-Example of database query response from notion api. Single record snippet.
->>>>>>> 0d4a1f1938c0739be447089fd6171a75f3312e80
+
+
 
     "object": "list",
     "results": [
@@ -104,17 +102,10 @@ The Notion Database Parser is a command line application and can be executed wit
 Parse the entire list of databases shared in a notion integration
 
 `-n`
-<<<<<<< HEAD
 To use with option -d. Give a name to the database
 
 `-d`
 Parse a single database providing the database id as parameter
-=======
-To use with option -d. Give a name to the database",
-
-`-d`
-Parse a single database proviing the database id
->>>>>>> 0d4a1f1938c0739be447089fd6171a75f3312e80
 
 `-u`
 Dump also databases list
@@ -129,10 +120,7 @@ I organise and perform music projects with choirs and I need to share with them 
 
 I want to use Notion for this purpose but, unfortunately, while you can easily share a database, it is not possible to share only the database view without sharing the entire underlying database. That will force me to share with a choir information coming from another choir creating among others privacy issues. 
 
-<<<<<<< HEAD
 I decided then to create a separate website where I can share with choirs all the relevant information to their project.The Notion Database Parser is a part of this website.
 
 There are others and, probably less complicated solutions to solve my problem, however I am practicing my coding skills and this project helped me quite a lot in deepening my knowledge in Python and having some fun doing so :)
-=======
-At the moment the app also dump the source databases in ./source_databases/\<source_dbname\>.json.
->>>>>>> 0d4a1f1938c0739be447089fd6171a75f3312e80
+
