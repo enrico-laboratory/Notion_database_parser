@@ -15,4 +15,3 @@ def dump_json(name, directory, database):
 
     with open(f'{path}/{name}.json', 'w') as f:
         json.dump(database, f, indent=2)
-    return database

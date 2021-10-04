@@ -17,15 +17,18 @@ parser.add_argument("-u",
 group = parser.add_mutually_exclusive_group(required=True)
 
 group.add_argument("-d",
-                   help="Parse a single database providing the database id as parameter",
+                   help="""
+                        Parse a single database providing
+                        the database id as parameter
+                        """,
                    action="store")
 
 
 group.add_argument("-l",
                    help="""
-                   Parse the entire list of databases
-                   shared in a notion integration
-                   """,
+                        Parse the entire list of databases
+                        shared in a notion integration
+                        """,
                    action="store_true")
 
 
