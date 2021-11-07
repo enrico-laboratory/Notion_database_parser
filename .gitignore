@@ -6,3 +6,6 @@ __pycache__
 databases
 source_database
 test
+credentials-sheets.json
+/.idea/
+/test.py

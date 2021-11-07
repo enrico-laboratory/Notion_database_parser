@@ -12,11 +12,13 @@ class Composer(object):
 
     def compose_and_dump_database(self):
 
-        parsed_database = {
-            'id': self.database_name,
-            'name': self.database_id,
-            'records': self.parsed_records
-        }
+        # parsed_database = {
+        #     'id': self.database_id,
+        #     'name': self.database_name,
+        #     'records': self.parsed_records
+        # }
+
+        parsed_database = self.parsed_records
 
         dump_json(self.database_name, "databases", parsed_database)
 

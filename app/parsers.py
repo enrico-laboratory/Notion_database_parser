@@ -72,8 +72,10 @@ class RecordParser(object):
 
         if key_type == 'relation':
             relation = []
-            for i in range(len(key['relation'])):
-                relation.append(key['relation'][i]['id'])
+            if key['relation']:
+                for i in range(len(key['relation'])):
+                    relation.append(key['relation'][i]['id'])
+                filtered_property = relation
             filtered_property = relation
         if key_type == 'checkbox':
             filtered_property = key['checkbox']
@@ -87,10 +89,12 @@ class RecordParser(object):
             filtered_property = key['created_time']
         if key_type == 'select' and key['select']:
             filtered_property = key['select']['name']
-        if key_type == 'multi_select' and key['multi_select']:
+        if key_type == 'multi_select':   # and key['multi_select']:
             multi_select = []
-            for i in range(len(key['multi_select'])):
-                multi_select.append(key['multi_select'][i]['name'])
+            if key['multi_select']:
+                for i in range(len(key['multi_select'])):
+                    multi_select.append(key['multi_select'][i]['name'])
+                filtered_property = multi_select
             filtered_property = multi_select
         if key_type == 'email' and key['email']:
             filtered_property = key['email']
