@@ -1,4 +1,4 @@
-# Notion Dabases Parser
+# Notion Databases Parser
 
 ## Description
 

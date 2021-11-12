@@ -1,6 +1,7 @@
-import config
 import os
 import json
+
+import config
 
 basedir = config.basedir
 

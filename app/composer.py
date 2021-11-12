@@ -2,7 +2,7 @@ from app.helpers import dump_json
 from app.parsers import RecordParser
 
 
-class Composer(object):
+class Composer:
 
     def __init__(self, database_id, database_name, database):
 

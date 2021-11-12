@@ -2,7 +2,7 @@ from app.cli import args
 from app.helpers import dump_json
 
 
-class ListDatabasesParser(object):
+class ListDatabasesParser():
     def __init__(self, query_database_list):
         self.query_database_list = query_database_list
 
@@ -22,11 +22,11 @@ class ListDatabasesParser(object):
 
         if args.l is True:
 
-            for i in range(len(databases_list)):
+            for row in databases_list:
                 record = {}
-                database_name = databases_list[i][
+                database_name = row[
                                 'title'][0]['text']['content']
-                database_id = databases_list[i][
+                database_id = row[
                                 'id']
                 record.update({'id': database_id,
                                'name': database_name})
@@ -43,7 +43,7 @@ class ListDatabasesParser(object):
         return database_list_parsed
 
 
-class RecordParser(object):
+class RecordParser():
     """"The class parse the records of a database
     using the filter_properties() which filter the
     values of the single record from the formats.
@@ -61,7 +61,8 @@ class RecordParser(object):
         return self.database["results"][record][
                             'properties'][key]['formula']
 
-    def filter_properties(self, key):
+    @staticmethod
+    def filter_properties(key):
         """"Filter record extracting the record value
         leaving behind the record formats"""
 
@@ -76,7 +77,8 @@ class RecordParser(object):
                 for i in range(len(key['relation'])):
                     relation.append(key['relation'][i]['id'])
                 filtered_property = relation
-            filtered_property = relation
+            else:
+                filtered_property = relation
         if key_type == 'checkbox':
             filtered_property = key['checkbox']
         if key_type == 'rich_text' and key['rich_text']:
@@ -89,13 +91,14 @@ class RecordParser(object):
             filtered_property = key['created_time']
         if key_type == 'select' and key['select']:
             filtered_property = key['select']['name']
-        if key_type == 'multi_select':   # and key['multi_select']:
+        if key_type == 'multi_select':
             multi_select = []
             if key['multi_select']:
                 for i in range(len(key['multi_select'])):
                     multi_select.append(key['multi_select'][i]['name'])
                 filtered_property = multi_select
-            filtered_property = multi_select
+            else:
+                filtered_property = multi_select
         if key_type == 'email' and key['email']:
             filtered_property = key['email']
         if key_type == 'number' and key['number']:
@@ -104,6 +107,13 @@ class RecordParser(object):
             filtered_property = key['phone_number']
         if key_type == 'url' and key['url']:
             filtered_property = key['url']
+        if key_type == 'date' and key['date']:
+            filtered_property = {
+                "start": key['date']["start"],
+                "end": key['date']["end"]
+            }
+        if key_type == 'string' and key['string']:
+            filtered_property = key['string']
 
         return filtered_property
 
@@ -116,7 +126,7 @@ class RecordParser(object):
     def parse_record(self):
         """ create a list comprising all the parsed
         records belonging to a database.
-        Accoding to the record type, call the
+        According to the record type, call the
         filter properties for the right json key."""
 
         parsed_records = []

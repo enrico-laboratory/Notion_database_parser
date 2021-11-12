@@ -18,15 +18,15 @@ def notion():
     else:
         token = inputPassword('Enter Notion token >')
 
-    notion = Client(auth=token)
+    notion_client = Client(auth=token)
 
-    return notion
+    return notion_client
 
 
-class Queries(object):
+class Queries:
 
-    def __init__(self, notion):
-        self.notion = notion()
+    def __init__(self, notion_client):
+        self.notion = notion_client()
 
     def get_databases_list(self):
         """"Query notion API and get the database list of the
@@ -38,12 +38,12 @@ class Queries(object):
 
         return databases_list
 
-    def get_and_dump_database(self, dbdatabae_id, database_name):
+    def get_and_dump_database(self, database_id, database_name):
         """"It gets and dump the queried database.
         It needs database name and id."""
 
-        database = self.notion.databases.query(dbdatabae_id)
+        database = self.notion.databases.query(database_id)
 
         dump_json(database_name, "source_database", database)
 
-        return dbdatabae_id, database_name, database
+        return database_id, database_name, database
