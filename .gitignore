@@ -9,3 +9,4 @@ test
 credentials-sheets.json
 /.idea/
 /test.py
+/.DS_Store
